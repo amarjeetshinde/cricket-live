@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#050505">
+  <meta name="description" content="Watch live matches online. Free match pictures and clips.">
+
+  <title>Live Match</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      background: #050505;
+      color-scheme: dark;
+    }
+
+    body {
+      background: #050505;
+      color: #fff;
+      font-family: Arial, Helvetica, sans-serif;
+      min-height: 100vh;
+    }
+
+    /* Header */
+    .header {
+      height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      background: #0b0b0b;
+      border-bottom: 1px solid #1d1d1d;
+    }
+
+    .logo {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .live {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #ff4545;
+    }
+
+    .live-dot {
+      width: 7px;
+      height: 7px;
+      background: #ff3030;
+      border-radius: 50%;
+    }
+
+    /* Main */
+    .container {
+      width: 100%;
+      max-width: 1100px;
+      margin: auto;
+      padding: 14px;
+    }
+
+    .match-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    /* Stream */
+    .stream-box {
+      width: 100%;
+      background: #000;
+      border-radius: 8px;
+      overflow: hidden;
+      aspect-ratio: 16 / 9;
+      border: 1px solid #1d1d1d;
+    }
+
+    .stream-box iframe {
+      width: 100%;
+      height: 100%;
+      display: block;
+      border: 0;
+    }
+
+    .stream-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #777;
+      font-size: 14px;
+    }
+
+    /* Telegram CTA */
+    .telegram-card {
+      margin-top: 12px;
+      padding: 15px;
+      border-radius: 8px;
+      background: #101010;
+      border: 1px solid #222;
+    }
+
+    .telegram-title {
+      font-size: 15px;
+      font-weight: 800;
+      margin-bottom: 5px;
+    }
+
+    .telegram-text {
+      color: #aaa;
+      font-size: 13px;
+      line-height: 1.4;
+      margin-bottom: 12px;
+    }
+
+    .telegram-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: 44px;
+      border-radius: 7px;
+      background: #168de2;
+      color: white;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .telegram-button:active {
+      transform: scale(.99);
+    }
+
+    /* Popup */
+    .popup-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.78);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 9999;
+    }
+
+    .popup {
+      width: 100%;
+      max-width: 390px;
+      background: #111;
+      border: 1px solid #292929;
+      border-radius: 12px;
+      padding: 24px 20px 20px;
+      text-align: center;
+      box-shadow: 0 15px 50px rgba(0,0,0,.6);
+    }
+
+    .telegram-icon {
+      width: 54px;
+      height: 54px;
+      margin: 0 auto 13px;
+      border-radius: 50%;
+      background: #168de2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 25px;
+    }
+
+    .popup h2 {
+      font-size: 21px;
+      margin-bottom: 8px;
+    }
+
+    .popup p {
+      color: #aaa;
+      font-size: 14px;
+      line-height: 1.5;
+      margin-bottom: 18px;
+    }
+
+    .popup-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+
+    .popup-btn {
+      width: 100%;
+      min-height: 45px;
+      border: 0;
+      border-radius: 7px;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .join-btn {
+      background: #168de2;
+      color: #fff;
+    }
+
+    .already-btn {
+      background: #242424;
+      color: #fff;
+      border: 1px solid #333;
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      color: #666;
+      font-size: 11px;
+      padding: 25px 10px;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 10px;
+      }
+
+      .match-title {
+        font-size: 16px;
+      }
+
+      .stream-box {
+        border-radius: 5px;
+      }
+
+      .popup {
+        max-width: 360px;
+      }
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <!-- HEADER -->
+
+  <header class="header">
+    <div class="logo">LIVE MATCH</div>
+
+```
+<div class="live">
+  <span class="live-dot"></span>
+  LIVE
+</div>
+```
+
+  </header>
+
+  <!-- MAIN CONTENT -->
+
+  <main class="container">
+
+```
+<div class="match-title">
+  🔴 Live Match
+</div>
+
+
+<!-- =====================================================
+     STREAM BOX
+
+     >>> PASTE YOUR IFRAME HERE <<<
+
+     Example:
+
+     <iframe
+       src="YOUR_STREAM_URL"
+       allowfullscreen
+       scrolling="no">
+     </iframe>
+
+     ===================================================== -->
+
+<div class="stream-box">
+
+  <iframe src="https://dillzycreations.github.io/Star-Sports-Hindi/" 
+        width="100%" 
+        height="650px" 
+        frameborder="0" 
+        allowfullscreen 
+        style="border-radius:10px; box-shadow:0 0 25px #2196F3;">
+</iframe>
+
+  <div class="stream-placeholder">
+    Live stream will appear here
+  </div>
+
+</div>
+
+
+<!-- TELEGRAM CTA BELOW STREAM -->
+<div class="telegram-card">
+
+  <div class="telegram-title">
+    📲 Get Match Updates on Telegram
+  </div>
+
+  <div class="telegram-text">
+    We also provide free 4K match pics and clips.
+    Join our Telegram to stay connected for future matches.
+  </div>
+
+  <a
+    class="telegram-button"
+    href="https://t.me/+2ZcHEVm_iqk4Nzc1"
+    target="_blank"
+    rel="noopener noreferrer">
+    🚀 Join Telegram
+  </a>
+
+</div>
+```
+
+  </main>
+
+  <footer class="footer">
+    © 2026 Live Match
+  </footer>
+
+  <!-- TELEGRAM POPUP -->
+
+  <div class="popup-overlay" id="telegramPopup">
+
+```
+<div class="popup">
+
+  <div class="telegram-icon">
+    ✈️
+  </div>
+
+  <h2>Join Our Telegram</h2>
+
+  <p>
+    Join our Telegram to stay connected for future matches,
+    free 4K match pics and clips.
+  </p>
+
+  <div class="popup-buttons">
+
+    <!-- JOIN TELEGRAM -->
+    <button
+      class="popup-btn join-btn"
+      onclick="joinTelegram()">
+      🚀 Join Telegram Now
+    </button>
+
+    <!-- ALREADY JOINED -->
+    <button
+      class="popup-btn already-btn"
+      onclick="closePopup()">
+      ✓ Already Joined
+    </button>
+
+  </div>
+
+</div>
+```
+
+  </div>
+
+  <script>
+    const TELEGRAM_LINK = "https://t.me/+2ZcHEVm_iqk4Nzc1";
+
+    function joinTelegram() {
+      window.location.href = TELEGRAM_LINK;
+    }
+
+    function closePopup() {
+      document.getElementById("telegramPopup").style.display = "none";
+    }
+
+    // Popup appears whenever the page is opened/refreshed.
+    window.addEventListener("load", function () {
+      document.getElementById("telegramPopup").style.display = "flex";
+    });
+  </script>
+
+</body>
+</html>
